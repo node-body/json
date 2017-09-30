@@ -7,6 +7,7 @@ const assertRejects = require('assert-rejects')
 const errorHandler = require('api-error-handler')
 const express = require('express')
 const got = require('got')
+const zlib = require('zlib')
 
 const getJsonBody = require('./')
 
@@ -18,6 +19,13 @@ describe('JSON body parser', () => {
 
     app.post('/', (req, res, next) => {
       getJsonBody(req).then(
+        (data) => res.json(data),
+        (err) => next(err)
+      )
+    })
+
+    app.post('/inflate', (req, res, next) => {
+      getJsonBody(req, { inflate: true }).then(
         (data) => res.json(data),
         (err) => next(err)
       )
@@ -41,10 +49,31 @@ describe('JSON body parser', () => {
     })
   })
 
-  it('should give proper errors', () => {
+  it('should parse json encoded with "gzip"', () => {
+    const body = { a: 1, b: 2 }
+    const encoded = zlib.gzipSync(JSON.stringify(body))
+    const headers = { 'Content-Encoding': 'gzip' }
+
+    return got('http://localhost:26934/inflate', { body: encoded, headers }).then((res) => {
+      assert.strictEqual(res.statusCode, 200)
+      assert.deepStrictEqual(JSON.parse(res.body), body)
+    })
+  })
+
+  it('should reject invalid json', () => {
     return assertRejects(
       got('http://localhost:26934/', { body: '{ ' }),
       (err) => (err.statusCode === 400 && JSON.parse(err.response.body).code === 'INVALID_JSON')
+    )
+  })
+
+  it('should reject "gzip" content-encoding', () => {
+    const body = zlib.gzipSync('{ "a": 1 }')
+    const headers = { 'Content-Encoding': 'gzip' }
+
+    return assertRejects(
+      got('http://localhost:26934/', { body, headers }),
+      (err) => (err.statusCode === 415 && JSON.parse(err.response.body).code === 'UNSUPPORTED_ENCODING')
     )
   })
 })

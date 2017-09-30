@@ -30,6 +30,14 @@ app.post('/v1/users', async (req, res, next) => {
 
 ## API
 
-### `getJsonBody(req: Request): Promise<any>`
+### `getJsonBody(req: Request, options: Options): Promise<any>`
 
 Parse the body of the incoming request `req`. Returns a promise of the parsed body.
+
+#### Options
+
+##### `inflate` (boolean)
+
+When set to `true`, then bodies with a `deflate` or `gzip` content-encoding will be inflated before being parsed.
+
+Defaults to `false`.
