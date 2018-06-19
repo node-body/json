@@ -31,6 +31,13 @@ describe('JSON body parser', () => {
       )
     })
 
+    app.post('/non-strict', (req, res, next) => {
+      getJsonBody(req, { strict: false }).then(
+        (data) => res.json(data),
+        (err) => next(err)
+      )
+    })
+
     app.use(errorHandler())
 
     server = app.listen(26934, () => done())
@@ -75,5 +82,19 @@ describe('JSON body parser', () => {
       got('http://localhost:26934/', { body, headers }),
       (err) => (err.statusCode === 415 && JSON.parse(err.response.body).code === 'UNSUPPORTED_ENCODING')
     )
+  })
+
+  it('should reject primitive roots', () => {
+    return assertRejects(
+      got('http://localhost:26934/', { body: '1337' }),
+      (err) => (err.statusCode === 400 && JSON.parse(err.response.body).code === 'INVALID_JSON')
+    )
+  })
+
+  it('should allow primitive roots (non-strict)', () => {
+    return got('http://localhost:26934/non-strict', { body: '1337' }).then((res) => {
+      assert.strictEqual(res.statusCode, 200)
+      assert.deepStrictEqual(res.body, '1337')
+    })
   })
 })

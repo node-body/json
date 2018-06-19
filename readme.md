@@ -41,3 +41,9 @@ Parse the body of the incoming request `req`. Returns a promise of the parsed bo
 When set to `true`, then bodies with a `deflate` or `gzip` content-encoding will be inflated before being parsed.
 
 Defaults to `false`.
+
+##### `strict` (boolean)
+
+When set to `true`, will only accept arrays and objects; when `false` will accept anything `JSON.parse` accepts.
+
+Defaults to `true`.
