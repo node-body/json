@@ -74,6 +74,13 @@ describe('JSON body parser', () => {
     )
   })
 
+  it('should reject empty body', () => {
+    return assertRejects(
+      got('http://localhost:26934/', { body: '' }),
+      (err) => (err.statusCode === 400 && JSON.parse(err.response.body).code === 'INVALID_JSON')
+    )
+  })
+
   it('should reject "gzip" content-encoding', () => {
     const body = zlib.gzipSync('{ "a": 1 }')
     const headers = { 'Content-Encoding': 'gzip' }

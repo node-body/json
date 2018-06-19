@@ -17,18 +17,18 @@ const getBodyStream = require('@body/stream')
  */
 
 // eslint-disable-next-line no-control-regex
-const reFirstChar = /^[\x20\x09\x0a\x0d]*(.)/
-
-function firstChar (source) {
-  return (reFirstChar.exec(source)[1] || '')
-}
+const reFirstChar = /[^\x20\x09\x0a\x0d]/
 
 function parseJsonStrictly (source) {
-  const first = firstChar(source)
+  const match = reFirstChar.exec(source)
 
-  if (first !== '{' && first !== '[') {
-    const index = source.indexOf(first)
-    const { message, stack } = new SyntaxError(`Unexpected token ${first} in JSON at position ${index}`)
+  if (match === null) {
+    const { message, stack } = new SyntaxError(`Unexpected end of JSON input`)
+    throw createError(400, message, { stack: stack, code: 'INVALID_JSON' })
+  }
+
+  if (match[0] !== '{' && match[0] !== '[') {
+    const { message, stack } = new SyntaxError(`Unexpected token ${match[0]} in JSON at position ${match.index}`)
     throw createError(400, message, { stack: stack, code: 'INVALID_JSON' })
   }
 
