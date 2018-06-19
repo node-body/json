@@ -1,7 +1,6 @@
-'use strict'
-
-const getStream = require('get-stream')
 const createError = require('http-errors')
+const getStream = require('get-stream')
+const pTry = require('p-try')
 
 const getBodyStream = require('@body/stream')
 
@@ -13,11 +12,6 @@ function parseJson (source) {
   }
 }
 
-module.exports = function getJsonBody (req, options) {
-  options = options || {}
-
-  return Promise.resolve()
-    .then(() => getBodyStream(req, { inflate: options.inflate }))
-    .then((bodyStream) => getStream(bodyStream))
-    .then((source) => parseJson(source))
+module.exports = function getJsonBody (req, options = {}) {
+  return pTry(getBodyStream, req, { inflate: options.inflate }).then(getStream).then(parseJson)
 }

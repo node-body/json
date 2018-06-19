@@ -7,19 +7,20 @@
     "test": "standard && mocha"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "dependencies": {
     "@body/stream": "^0.1.0",
     "get-stream": "^3.0.0",
-    "http-errors": "^1.6.2"
+    "http-errors": "^1.6.3",
+    "p-try": "^2.0.0"
   },
   "devDependencies": {
     "api-error-handler": "^1.0.0",
     "assert-rejects": "^0.1.1",
-    "express": "^4.16.1",
-    "got": "^7.1.0",
-    "mocha": "^3.5.3",
-    "standard": "^10.0.3"
+    "express": "^4.16.3",
+    "got": "^8.3.1",
+    "mocha": "^5.2.0",
+    "standard": "^11.0.1"
   }
 }
