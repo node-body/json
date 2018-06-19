@@ -11,6 +11,6 @@ declare namespace getJsonBody {
 
 declare function getJsonBody (req: IncomingMessage): Promise<object>
 declare function getJsonBody (req: IncomingMessage, options: getJsonBody.Options & { strict?: true }): Promise<object>
-declare function getJsonBody (req: IncomingMessage, options: getJsonBody.Options & { strict: false }): Promise<object | string | number | boolean>
+declare function getJsonBody (req: IncomingMessage, options: getJsonBody.Options & { strict: false }): Promise<object | string | number | boolean | null>
 
 export = getJsonBody
