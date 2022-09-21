@@ -10,9 +10,9 @@
     "node": ">=6"
   },
   "dependencies": {
-    "@body/stream": "^0.1.0",
+    "@body/stream": "^0.1.2",
     "get-stream": "^3.0.0",
-    "http-errors": "^1.6.3",
+    "http-errors": "^2.0.0",
     "p-try": "^2.0.0"
   },
   "devDependencies": {
